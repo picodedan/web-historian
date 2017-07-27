@@ -26,16 +26,53 @@ exports.initialize = function(pathsObj) {
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function(callback) {
+  fs.readFile(this.paths.list, (err, data) => {
+    if (err) {
+      throw err;
+    }
+    let listUrls = data.toString().split('\n');
+    return callback(listUrls);
+  });
+
+  //capture contents of file and convert to object
+    //keys would be the url and value a boolean to indicate archived or not
+  
+  //pass as input to CB the object. 
 };
 
 exports.isUrlInList = function(url, callback) {
+  //call readListOfUrls check if url is in list.
+  this.readListOfUrls((listUrls) => {
+    return callback(listUrls.includes(url));
+  });
+    //return true to Callback if it is 
+    //return false to callback if it isn't
 };
 
 exports.addUrlToList = function(url, callback) {
+  fs.writeFile(this.paths.list, url + '\n', callback);
+  // write url to sites.txt and return callback on completion
 };
 
 exports.isUrlArchived = function(url, callback) {
+  //fs.exists on the input url 
+  fs.readFile(this.paths.archivedSites + '/' + url, (err, data) => {
+    if (err) {
+      return callback(false);
+    }
+    return callback(true);
+  });
+  // return callback with true/false
 };
 
 exports.downloadUrls = function(urls) {
+  urls.forEach((url) => {
+    this.isUrlArchived(url, (returnFromisUrlArchived) => {
+      if (!returnFromisUrlArchived) {
+        fs.writeFile(this.paths.archivedSites + '/' + url, 'stringDummyData');
+      }
+    });
+  });
+  //for each url in list that is NOT archived, 
+    //download the front page of the given URL into archives/sites 
 };
