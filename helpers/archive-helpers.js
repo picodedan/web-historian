@@ -42,9 +42,10 @@ exports.readListOfUrls = function(callback) {
 
 exports.isUrlInList = function(url, callback) {
   //call readListOfUrls check if url is in list.
-  this.readListOfUrls((listUrls) => {
+  var checkThis = (listUrls) => {
     return callback(listUrls.includes(url));
-  });
+  };
+  this.readListOfUrls(checkThis);
     //return true to Callback if it is 
     //return false to callback if it isn't
 };

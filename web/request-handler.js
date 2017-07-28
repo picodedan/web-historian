@@ -20,6 +20,32 @@ exports.handleRequest = function (req, res) {
         res.end(data);
       });
     } else if (req.method === 'POST') {
+      console.log('we got a post');
+      req.on('data', (data) => {
+        let incomingUrlReq = data.toString().substr(4);
+        let alreadyInList;
+        let isArchived;
+        debugger;
+        archive.isUrlInList(incomingUrlReq, (result) => {
+          alreadyInList = result;
+          console.log('already in list ' + alreadyInList);
+        });
+        if (alreadyInList === true) {
+          archive.isUrlArchived(incomingUrlReq, (result) => {
+            isArchived = result;
+            console.log('already in list ' + alreadyInList);
+            console.log('is Archived ' + isArchived);
+          });
+          //do other things here is true
+        } else {
+          archive.addUrlToList(incomingUrlReq, (result) => {
+            //when done kick out the response
+            console.log('callback result from fswrite ' + result);
+            res.writeHead(201, help.headers);
+            res.end();
+          }); 
+        }
+      });
       //do somethign about it yo!
     } else if (req.method === 'OPTIONS') {
       //send back basic headers
